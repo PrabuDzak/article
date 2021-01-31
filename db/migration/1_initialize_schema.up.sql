@@ -1,0 +1,14 @@
+CREATE TABLE IF NOT EXISTS `article` (
+  `id` INT NOT NULL PRIMARY KEY,
+  `author` TEXT,
+  `title` TEXT,
+  `body` TEXT,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS `article_seq` (
+  `num` INT
+) ENGINE=InnoDB;
+
+INSERT INTO `article_seq` (`num`) VALUES (0);
