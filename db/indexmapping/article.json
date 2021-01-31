@@ -1,0 +1,30 @@
+{
+  "settings": {
+    "number_of_shards": 1,
+    "number_of_replicas": 0
+  },
+  "mappings": {
+    "article": {
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "author": {
+          "type": "keyword"
+        },
+        "title": {
+          "type": "text"
+        },
+        "body": {
+          "type": "text"
+        },
+        "created_at": {
+          "type": "date"
+        },
+        "updated_at": {
+          "type": "date"
+        }
+      }
+    }
+  }
+}
