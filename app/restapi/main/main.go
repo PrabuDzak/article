@@ -44,7 +44,9 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	redisClient := redis.NewClient(&redis.Options{})
+	redisClient := redis.NewClient(&redis.Options{
+		Addr: os.Getenv("REDIS_ADDR"),
+	})
 	err = redisClient.Ping().Err()
 	if err != nil {
 		log.Fatalln(err)
