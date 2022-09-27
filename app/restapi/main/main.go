@@ -20,6 +20,9 @@ import (
 	articleindexer "github.com/prabudzak/article/service/article/elasticsearch"
 	articledb "github.com/prabudzak/article/service/article/mysql"
 	articlecache "github.com/prabudzak/article/service/article/redis"
+	"github.com/prabudzak/article/service/shortlink"
+	"github.com/prabudzak/article/service/shortlink/idgenerator"
+	shortlinkdb "github.com/prabudzak/article/service/shortlink/memory"
 )
 
 func main() {
@@ -71,7 +74,12 @@ func main() {
 
 	dispatcher.AddSubscriber(ctx, event.ArticleCreated{}, articleService.SubscriberCacheArticle)
 
-	router := restapi.New(articleService)
+	idGenerator := idgenerator.NewShortUrlIdGenerator()
+	database := shortlinkdb.NewUrlShortenerInMemoryDatabase()
+
+	urlShorten := shortlink.NewUrlShorten(idGenerator, database)
+
+	router := restapi.New(articleService, urlShorten)
 
 	log.Printf("listening in %s\n", os.Getenv("PORT"))
 	err = http.ListenAndServe(fmt.Sprintf("0.0.0.0:%s", os.Getenv("PORT")), router.Router())

@@ -100,7 +100,7 @@ func TestCreateArticle(t *testing.T) {
 			dep := initialize(ctrl)
 			dep.articleService.EXPECT().CreateArticle(gomock.Any(), gomock.Any()).MaxTimes(1).Return(tc.createArticleErr)
 
-			api := restapi.New(dep.articleService)
+			api := restapi.New(dep.articleService, nil)
 			router := api.Router()
 			server := httptest.NewServer(router)
 			defer server.Close()
@@ -185,7 +185,7 @@ func TestListArticle(t *testing.T) {
 			dep := initialize(ctrl)
 			dep.articleService.EXPECT().SearchArticle(gomock.Any(), tc.expectedQuery).MaxTimes(1).Return(tc.searchArticle, tc.searchArticleErr)
 
-			api := restapi.New(dep.articleService)
+			api := restapi.New(dep.articleService, nil)
 			router := api.Router()
 			server := httptest.NewServer(router)
 			defer server.Close()

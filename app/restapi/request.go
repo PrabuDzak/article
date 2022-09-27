@@ -22,3 +22,7 @@ func (c createArticleRequest) Validate() error {
 	}
 	return nil
 }
+
+type createShortUrlRequest struct {
+	URL string `json:"url"`
+}

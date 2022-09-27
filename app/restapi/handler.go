@@ -2,6 +2,7 @@ package restapi
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -66,6 +67,56 @@ func (a *API) listArticle(w http.ResponseWriter, r *http.Request, param httprout
 	}
 
 	a.response(w, http.StatusOK, response)
+}
+
+func (a *API) generateURL(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
+	var body createShortUrlRequest
+
+	err := json.NewDecoder(r.Body).Decode(&body)
+	if err != nil {
+		a.responseMessage(w, http.StatusBadRequest, "bad request")
+		return
+	}
+	defer r.Body.Close()
+
+	shortenURL, err := a.shortenUrlService.CreateShortURL(r.Context(), body.URL)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	response := response{
+		Message: "url shorten",
+		Data:    shortenURL,
+	}
+
+	a.response(w, http.StatusCreated, response)
+}
+
+func (a *API) getShortUrlStats(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
+	id := param.ByName("shortenID")
+
+	shortenURL, err := a.shortenUrlService.GetShortURL(r.Context(), id)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	response := response{
+		Message: "short url stats retrieved",
+		Data:    shortenURL,
+	}
+
+	a.response(w, http.StatusOK, response)
+}
+
+func (a *API) redirect(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
+	id := param.ByName("shortenID")
+
+	shortenURL, err := a.shortenUrlService.GetShortUrlForRedirect(r.Context(), id)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	http.Redirect(w, r, shortenURL.OriginalURL, http.StatusSeeOther)
 }
 
 func (a *API) healthz(w http.ResponseWriter, r *http.Request, param httprouter.Params) {

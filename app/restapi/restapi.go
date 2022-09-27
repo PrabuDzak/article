@@ -20,13 +20,15 @@ type middleware func(route route, fn httprouter.Handle) httprouter.Handle
 
 // API represent REST API application
 type API struct {
-	articleService service.ArticleService
+	articleService    service.ArticleService
+	shortenUrlService service.ShortenUrlService
 }
 
 // New create a new instance of REST API application
-func New(articleService service.ArticleService) *API {
+func New(articleService service.ArticleService, shortenUrlService service.ShortenUrlService) *API {
 	return &API{
-		articleService: articleService,
+		articleService:    articleService,
+		shortenUrlService: shortenUrlService,
 	}
 }
 
@@ -37,6 +39,9 @@ func (a *API) Router() http.Handler {
 	routes := []route{
 		{method: http.MethodPost, path: "/articles", handler: a.createArticle},
 		{method: http.MethodGet, path: "/articles", handler: a.listArticle},
+		{method: http.MethodPost, path: "/short", handler: a.generateURL},
+		{method: http.MethodGet, path: "/s/:shortenID", handler: a.redirect},
+		{method: http.MethodGet, path: "/stats/:shortenID", handler: a.getShortUrlStats},
 
 		{method: http.MethodGet, path: "/healthz", handler: a.healthz},
 	}

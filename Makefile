@@ -20,6 +20,8 @@ build-docker:
 	docker build --no-cache -t prabudzak/article:latest -f Dockerfile.build .
 
 run:
+	CGO_ENABLED=0 GOOS=linux go build -o ./_output/restapi ./app/restapi/main/main.go
+	CGO_ENABLED=0 GOOS=linux go build -o ./_output/testing ./app/testing/main/main.go
 	./_output/restapi
 
 acceptence:
